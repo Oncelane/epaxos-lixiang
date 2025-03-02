@@ -580,11 +580,11 @@ func (i *Instance) commonPreAcceptedNextStep() (action uint8, msg message.Messag
 // One replica will receive PreAcceptOks only if it's the initial leader,
 // On receiving this message,
 // it will increment the preAcceptReplyCount, and if
-// - preAcceptReplyCount >= the size of fast quorum, and all replies are
-//   the same, then it will broadcast Commits,
-// - preAcceptReplyCount >= N/2(not including the sender), and not all replies are equal,
-//   then it will broadcast Accepts,
-// - otherwise, do nothing
+//   - preAcceptReplyCount >= the size of fast quorum, and all replies are
+//     the same, then it will broadcast Commits,
+//   - preAcceptReplyCount >= N/2(not including the sender), and not all replies are equal,
+//     then it will broadcast Accepts,
+//   - otherwise, do nothing
 func (i *Instance) handlePreAcceptOk(p *message.PreAcceptOk) (action uint8, msg message.Message) {
 	if !i.ballot.IsInitialBallot() {
 		panic("")
@@ -607,13 +607,13 @@ func (i *Instance) handlePreAcceptOk(p *message.PreAcceptOk) (action uint8, msg 
 // receiving corresponding pre-accept reply (ok == true)
 // - union deps, and update counts
 // Broadcast cases:
-// - receiving == fast quorum replies with same deps
-//    and the instance itself is initial leader,
-//    then broadcast Commit (fast path)
-// - receiving >= N/2 replies (not including the sender itself),
-//    and not satisfying above condition,
-//    then broadcast Accepts (slow path, Paxos Accept Phase)
-// - Otherwise do nothing.
+//   - receiving == fast quorum replies with same deps
+//     and the instance itself is initial leader,
+//     then broadcast Commit (fast path)
+//   - receiving >= N/2 replies (not including the sender itself),
+//     and not satisfying above condition,
+//     then broadcast Accepts (slow path, Paxos Accept Phase)
+//   - Otherwise do nothing.
 func (i *Instance) handlePreAcceptReply(p *message.PreAcceptReply) (action uint8, msg message.Message) {
 	if !i.isSender() {
 		return noAction, nil
@@ -666,7 +666,9 @@ func (i *Instance) handleAccept(a *message.Accept) (action uint8, msg *message.A
 // - ballot
 // Broadcast event happens when:
 // if receiving majority replies with ok == true,
-//    then broadcast Commit
+//
+//	then broadcast Commit
+//
 // otherwise: do nothing.
 func (i *Instance) handleAcceptReply(a *message.AcceptReply) (action uint8, msg message.Message) {
 	if !i.isSender() {
@@ -759,9 +761,9 @@ func (i *Instance) handlePrepare(p *message.Prepare) (action uint8, msg *message
 // Broadcast action happesn when quorum replies are received, and
 // -
 // Assumption:
-// 1. Receive only first N/2 replies.
-//   Even if we broadcast prepare to all, we only handle the first N/2 (positive)
-//   replies.
+//  1. Receive only first N/2 replies.
+//     Even if we broadcast prepare to all, we only handle the first N/2 (positive)
+//     replies.
 //
 // If a preparing instance as nilstatus handles prepare reply of
 // - committed, it should set its recovery info according to the reply
@@ -909,15 +911,15 @@ func (i *Instance) loadRecoveryInfo() {
 // from non-leader replicas, we couldn't tell whether the default leader had chosen
 // fast path or not. At this point, the instance should go to PAXOS-ACCEPT phase.
 // And it is guaranteed safety:
-// 1. if default leader hadn't gone to fast path, because (1) the instance had
-//    prepared a quorum of peers, the final commit message wouldn't take outdated,
-//    previous ones; and (2) including the default leader, there is
-//    majority who knows the command, this guarantee that any conflict that happen
-//    afterwards would know it. Therefore, this guarantees both consistency and
-//    correctness of conflicting.
-// 2. if the default leader had gone to fast path, then it must have sent
-//    commit message of the same commands and dependencies as of the accept message
-//    this instance sent for recovery. And this is also proven safe.
+//  1. if default leader hadn't gone to fast path, because (1) the instance had
+//     prepared a quorum of peers, the final commit message wouldn't take outdated,
+//     previous ones; and (2) including the default leader, there is
+//     majority who knows the command, this guarantee that any conflict that happen
+//     afterwards would know it. Therefore, this guarantees both consistency and
+//     correctness of conflicting.
+//  2. if the default leader had gone to fast path, then it must have sent
+//     commit message of the same commands and dependencies as of the accept message
+//     this instance sent for recovery. And this is also proven safe.
 func (i *Instance) makeRecoveryDecision() (action uint8, msg message.Message) {
 	i.loadRecoveryInfo()
 	action = broadcastAction
@@ -1088,7 +1090,7 @@ func (i *Instance) touch() {
 }
 
 func (i *Instance) inactiveDuaration() time.Duration {
-	p := time.Now().Sub(i.lastTouched)
+	p := time.Since(i.lastTouched)
 	return p
 }
 

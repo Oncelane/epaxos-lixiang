@@ -36,7 +36,7 @@ var v2Log = glog.V(0)
 // #end
 
 var (
-	errConflictsNotFullyResolved = errors.New("Conflicts not fully resolved")
+	errConflictsNotFullyResolved = errors.New("conflicts not fully resolved")
 )
 
 // ****************************
@@ -153,7 +153,7 @@ func verifyparam(param *Param) error {
 	}
 	if param.Size%2 == 0 {
 		// TODO: epaxos replica error
-		return fmt.Errorf("Use odd number as quorum size")
+		return fmt.Errorf("use odd number as quorum size")
 	}
 	if param.CheckpointCycle == 0 {
 		param.CheckpointCycle = defaultCheckpointCycle
@@ -174,7 +174,7 @@ func verifyparam(param *Param) error {
 		}
 	}
 	if param.Transporter == nil {
-		return fmt.Errorf("No specified transporter")
+		return fmt.Errorf("no specified transporter")
 	}
 	return nil
 }
@@ -663,7 +663,7 @@ func (r *Replica) findAndExecute() {
 				case epaxos.ErrStateMachineExecution:
 					panic("")
 					// TODO: log and warning
-					break
+					// break
 				default:
 					panic("unexpected error")
 				}
@@ -733,8 +733,11 @@ func (r *Replica) executeList() error {
 // Assumption this function is based on:
 // - If a node is executed, all SCC it belongs to or depending has been executed.
 func (r *Replica) resolveConflicts(node *Instance) bool {
+	if node == nil {
+		panic("nil node")
+	}
 	v2Log.Infof("resolve for [%v][%v]\n", node.rowId, node.id)
-	if node == nil || !node.isAtStatus(committed) {
+	if !node.isAtStatus(committed) {
 		panic("")
 	}
 
@@ -966,6 +969,9 @@ func (r *Replica) RestoreReplica() error {
 	buffer := bytes.NewBuffer(b)
 	dec := gob.NewDecoder(buffer)
 	err = dec.Decode(&p)
+	if err != nil {
+		return err
+	}
 	r.Unpack(&p)
 
 	return nil

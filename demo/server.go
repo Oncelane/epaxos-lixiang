@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"math/rand"
 	"os"
 	"strconv"
 	"time"
@@ -24,10 +23,11 @@ const (
 type Voter struct{}
 
 // NOTE: This is not idempotent.
-//      Same command might be executed for multiple times
-//      but the exection is slow now, so it is unlikely to happen
+//
+//	Same command might be executed for multiple times
+//	but the exection is slow now, so it is unlikely to happen
 func (v *Voter) Execute(c []message.Command) ([]interface{}, error) {
-	if c == nil || len(c) == 0 {
+	if len(c) == 0 {
 		fmt.Fprintln(os.Stderr, "From: No op")
 	} else {
 		for i := range c {
@@ -95,7 +95,7 @@ func main() {
 	}
 	fmt.Println("====== start ======")
 
-	rand.Seed(time.Now().UTC().UnixNano())
+	// rand.Seed(time.Now().UTC().UnixNano())
 	counter := 1
 	for {
 		time.Sleep(time.Millisecond * 500)

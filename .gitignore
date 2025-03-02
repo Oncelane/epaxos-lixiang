@@ -27,3 +27,8 @@ _testmain.go
 push.sh
 pull.sh
 tags
+
+!/demo/server.go
+/demo
+
+*.k1

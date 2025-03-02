@@ -1,36 +1,3 @@
-#!/bin/bash
-
-# clear logs
-rm /dev/shm/demo* -fr
-rm /tmp/*test* -fr
-
-# ROOT=$GOPATH/src/github.com/go-distributed/epaxos
-# cd $ROOT
-
-echo "======= Basic Message/Data Test ======"
-echo
-cd message
-go test -v -cover
-cd ..
-
-echo
-echo "======= Static Tests ======="
-echo "Epaxos State Machine Basic Test"
-echo "Execution Module Test"
-echo "Timeout Module Test"
-echo "Persistent Module Test"
-echo
-cd replica
-go test -v -cover
-cd ..
-
-echo
-echo "======= Log Consistency Test ======"
-echo
-cd livetest
-go test -v
-cd ..
-
 echo
 echo "======= Failover Test ======"
 echo
